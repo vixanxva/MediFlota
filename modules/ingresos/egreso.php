@@ -64,6 +64,8 @@ plantilla_inicio('Registrar egreso');
                 <dd class="col-sm-8"><?= nl2br(e($ingreso['falla_reportada'])) ?></dd>
                 <dt class="col-sm-4">Diagnóstico</dt>
                 <dd class="col-sm-8"><?= $ingreso['diagnostico'] !== null ? nl2br(e($ingreso['diagnostico'])) : '<span class="text-muted">Sin registrar</span>' ?></dd>
+                <dt class="col-sm-4">Tipo de mantenimiento</dt>
+                <dd class="col-sm-8"><?= $ingreso['tipo_mantenimiento'] !== null ? e(TIPOS_MANTENIMIENTO[$ingreso['tipo_mantenimiento']]) : '<span class="text-muted">Sin registrar</span>' ?></dd>
                 <dt class="col-sm-4">Técnico</dt>
                 <dd class="col-sm-8"><?= $ingreso['nombre_tecnico'] !== null ? e($ingreso['nombre_tecnico']) : '<span class="text-muted">Sin asignar</span>' ?></dd>
                 <dt class="col-sm-4">Costo total</dt>
@@ -77,6 +79,16 @@ plantilla_inicio('Registrar egreso');
 
     <?php mostrar_errores($errores); ?>
 
+    <?php if ($faltantes = datos_faltantes_para_egreso($ingreso)): ?>
+        <div class="alert alert-warning">
+            <p class="mb-2">
+                Para registrar el egreso, primero completa en el detalle del ingreso:
+                <strong><?= e(implode(', ', $faltantes)) ?></strong>.
+            </p>
+            <a href="<?= e(url('modules/ingresos/detalle.php?id=' . $idIngreso)) ?>" class="btn btn-sm btn-primary">Ir al detalle</a>
+            <a href="<?= e(url('modules/ingresos/')) ?>" class="btn btn-sm btn-outline-secondary">Volver</a>
+        </div>
+    <?php else: ?>
     <form method="post" class="bg-white p-4 rounded shadow-sm">
         <?= csrf_campo() ?>
 
@@ -103,5 +115,6 @@ plantilla_inicio('Registrar egreso');
             <a href="<?= e(url('modules/ingresos/')) ?>" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </form>
+    <?php endif; ?>
 </div>
 <?php plantilla_fin(); ?>
