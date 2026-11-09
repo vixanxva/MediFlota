@@ -41,8 +41,37 @@ MediFlota/
 ├── includes/    # header, footer, sesión y control de acceso
 ├── modules/     # una carpeta por módulo (vehiculos, tecnicos, ingresos, ...)
 ├── assets/      # css, js, imágenes
-└── index.php    # login
+├── index.php    # login
+├── inicio.php   # página de inicio tras el login
+└── logout.php   # cerrar sesión
 ```
+
+Si tu MySQL tiene contraseña u otra configuración, copia `config/config.local.example.php` como `config/config.local.php` y cambia ahí lo necesario (ese archivo no se sube a git).
+
+## Cómo crear una página protegida
+
+Cada página de `modules/<modulo>/` empieza así:
+
+```php
+<?php
+require_once __DIR__ . '/../../includes/sesion.php';
+requiere_perfil('administrador');              // solo administradores
+// requiere_perfil('administrador', 'tecnico'); // ambos perfiles
+// requiere_login();                            // cualquier usuario con sesión
+```
+
+Funciones disponibles (`includes/sesion.php` y `includes/funciones.php`):
+
+| Función | Para qué |
+|---|---|
+| `db()` | Conexión PDO. Usar siempre consultas preparadas: `db()->prepare('... WHERE id = ?')`. |
+| `usuario_actual()` | Datos del usuario conectado: `usuario`, `perfil`, `id_tecnico`, `nombre`. |
+| `es_administrador()` | `true` si el perfil es administrador. |
+| `e($texto)` | Escapa texto para imprimirlo en HTML. Usarla en todo lo que venga de la BD o de formularios. |
+| `url('modules/vehiculos/')` | URL dentro del proyecto, sin importar la carpeta donde esté instalado. |
+| `redirigir('inicio.php')` | Redirige y termina. |
+| `csrf_campo()` / `verificar_csrf()` | Poner `<?= csrf_campo() ?>` en cada formulario POST y llamar `verificar_csrf()` al procesarlo. |
+| `guardar_mensaje($texto, $tipo)` / `tomar_mensaje()` | Mensaje para mostrar en la siguiente página (ej. "Vehículo guardado"). |
 
 ## Flujo de trabajo
 
