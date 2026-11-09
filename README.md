@@ -38,9 +38,9 @@ Equipo: Andrés Calderín, Sebastián Caraballo y Jeison Villanueva. Docente: Pa
 MediFlota/
 ├── config/      # conexión a la base de datos
 ├── database/    # schema.sql y seed.sql
-├── includes/    # header, footer, sesión y control de acceso
-├── modules/     # una carpeta por módulo (vehiculos, tecnicos, ingresos, ...)
-├── assets/      # css, js, imágenes
+├── includes/    # header.php, footer.php, menu.php, sesión y funciones de ayuda
+├── modules/     # una carpeta por módulo (panel, vehiculos, tecnicos, ingresos, historial)
+├── assets/      # css/estilos.css, js, img/logo.svg
 ├── index.php    # login
 ├── inicio.php   # página de inicio tras el login
 └── logout.php   # cerrar sesión
@@ -58,7 +58,22 @@ require_once __DIR__ . '/../../includes/sesion.php';
 requiere_perfil('administrador');              // solo administradores
 // requiere_perfil('administrador', 'tecnico'); // ambos perfiles
 // requiere_login();                            // cualquier usuario con sesión
+
+// ...consultas y procesamiento del formulario (antes de imprimir HTML)...
+
+$titulo = 'Vehículos';
+require __DIR__ . '/../../includes/header.php';
+?>
+<h1 class="h3 mb-3">Vehículos</h1>
+<!-- contenido de la página -->
+<?php require __DIR__ . '/../../includes/footer.php'; ?>
 ```
+
+- `header.php` pone Bootstrap, los estilos, la barra de navegación según el perfil y el mensaje guardado con `guardar_mensaje()`. `footer.php` cierra la página.
+- Las redirecciones (`redirigir()`) van **antes** del `header.php`, porque después ya se envió HTML.
+- **El menú no se edita:** ya tiene todos los módulos (`includes/menu.php`). La opción aparece en gris ("en construcción") hasta que exista `modules/<modulo>/index.php`; al crear ese archivo se activa sola.
+- Cuando exista `modules/panel/index.php` (#8), `inicio.php` redirige allá y el panel pasa a ser la página principal.
+- Formularios de una columna: envolverlos en `<div class="contenido-angosto">`. Los estilos propios van en `assets/css/estilos.css`.
 
 Funciones disponibles (`includes/sesion.php` y `includes/funciones.php`):
 
@@ -72,6 +87,9 @@ Funciones disponibles (`includes/sesion.php` y `includes/funciones.php`):
 | `redirigir('inicio.php')` | Redirige y termina. |
 | `csrf_campo()` / `verificar_csrf()` | Poner `<?= csrf_campo() ?>` en cada formulario POST y llamar `verificar_csrf()` al procesarlo. |
 | `guardar_mensaje($texto, $tipo)` / `tomar_mensaje()` | Mensaje para mostrar en la siguiente página (ej. "Vehículo guardado"). |
+| `mostrar_errores($errores)` | Lista de errores de validación en una alerta roja (no imprime nada si está vacía). |
+| `etiqueta_estado_vehiculo($estado)` | Etiqueta de color del estado: verde disponible, amarillo en mantenimiento, rojo fuera de servicio. Textos en `ESTADOS_VEHICULO`. |
+| `formato_fecha_hora()`, `formato_numero()`, `formato_pesos()` | `09/11/2026 2:20 p. m.`, `152.300`, `$ 1.450.000`. |
 
 ## Flujo de trabajo
 

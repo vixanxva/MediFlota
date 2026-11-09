@@ -1,0 +1,104 @@
+/*
+ * Estilos generales de MediFlota.
+ * Bootstrap 5 hace casi todo; aquí solo va lo propio del sistema.
+ */
+
+:root {
+    --mf-fondo: #f3f6f9;
+    --mf-borde: #dee2e6;
+    --mf-azul-oscuro: #0a3d8f;
+}
+
+body {
+    background-color: var(--mf-fondo);
+}
+
+/* ---------- Barra de navegación ---------- */
+
+.navbar-brand {
+    font-weight: 600;
+    letter-spacing: .02em;
+}
+
+/* Enlaces casi blancos; los módulos que aún no existen, apagados. */
+.navbar-dark {
+    --bs-navbar-color: rgba(255, 255, 255, .9);
+    --bs-navbar-hover-color: #fff;
+    --bs-navbar-active-color: #fff;
+    --bs-navbar-disabled-color: rgba(255, 255, 255, .45);
+}
+
+.navbar-dark .nav-link {
+    border-radius: .375rem;
+}
+
+.navbar-dark .nav-link.active {
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, .18);
+}
+
+.navbar-dark .nav-link.disabled {
+    cursor: not-allowed;
+    pointer-events: auto; /* para que se vea el título "En construcción" al pasar el mouse */
+}
+
+@media (min-width: 992px) {
+    .navbar-dark .nav-link {
+        padding-left: .75rem !important;
+        padding-right: .75rem !important;
+    }
+}
+
+.navbar-text small {
+    color: rgba(255, 255, 255, .7);
+}
+
+/* ---------- Contenido ---------- */
+
+/* Formularios de una columna (registrar ingreso, egreso, vehículo...). */
+.contenido-angosto {
+    max-width: 640px;
+}
+
+/* Columna de texto largo en tablas (ej. falla reportada). */
+.columna-texto {
+    min-width: 180px;
+}
+
+/* Tarjetas de módulos en la página de inicio. */
+.tarjeta-modulo {
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+a.tarjeta-modulo:hover,
+a.tarjeta-modulo:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1) !important;
+}
+
+/* ---------- Pie ---------- */
+
+.pie {
+    background-color: #fff;
+    border-top: 1px solid var(--mf-borde);
+}
+
+/* ---------- Inicio de sesión ---------- */
+
+.pagina-login {
+    background: linear-gradient(135deg, #0d6efd 0%, var(--mf-azul-oscuro) 100%);
+}
+
+.pagina-login .card {
+    border: 0;
+    border-radius: 1rem;
+}
+
+.pagina-login .logo {
+    width: 56px;
+    height: 56px;
+}
+
+.pagina-login .pie-login {
+    color: rgba(255, 255, 255, .75);
+}
