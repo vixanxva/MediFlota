@@ -27,8 +27,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $errores = registrar_ingreso($datos, $idIngreso);
     if (!$errores) {
-        guardar_mensaje('Ingreso registrado. El vehículo quedó en mantenimiento.', 'success');
-        redirigir('modules/ingresos/');
+        guardar_mensaje('Ingreso registrado. El vehículo quedó en mantenimiento. Ahora puedes asignar el técnico y registrar el diagnóstico.', 'success');
+        redirigir('modules/ingresos/detalle.php?id=' . $idIngreso);
     }
 }
 

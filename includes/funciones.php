@@ -33,6 +33,14 @@ function formato_numero($numero, int $decimales = 0): string
     return number_format((float) $numero, $decimales, ',', '.');
 }
 
+/** Valor en pesos colombianos: 1450000 -> '$ 1.450.000'. Muestra centavos solo si los hay. */
+function formato_pesos($valor): string
+{
+    $valor = (float) $valor;
+    $decimales = ((int) round($valor * 100)) % 100 !== 0 ? 2 : 0;
+    return '$ ' . formato_numero($valor, $decimales);
+}
+
 /** Redirige a una ruta del proyecto y termina la ejecución. */
 function redirigir(string $ruta = ''): void
 {
