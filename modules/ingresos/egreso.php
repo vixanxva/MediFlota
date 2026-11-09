@@ -83,7 +83,7 @@ plantilla_inicio('Registrar egreso');
         <div class="alert alert-warning">
             <p class="mb-2">
                 Para registrar el egreso, primero completa en el detalle del ingreso:
-                <strong><?= e(implode(', ', $faltantes)) ?></strong>.
+                <strong><?= e(unir_lista($faltantes)) ?></strong>.
             </p>
             <a href="<?= e(url('modules/ingresos/detalle.php?id=' . $idIngreso)) ?>" class="btn btn-sm btn-primary">Ir al detalle</a>
             <a href="<?= e(url('modules/ingresos/')) ?>" class="btn btn-sm btn-outline-secondary">Volver</a>
