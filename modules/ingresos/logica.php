@@ -279,7 +279,7 @@ function registrar_egreso(int $idIngreso, array $datos): array
         } else {
             $faltantes = datos_faltantes_para_egreso($ingreso);
             if ($faltantes) {
-                $errores[] = 'Antes del egreso registra en el detalle del ingreso: ' . implode(', ', $faltantes) . '.';
+                $errores[] = 'Antes del egreso registra en el detalle del ingreso: ' . unir_lista($faltantes) . '.';
             }
             if ($fechaHora < $ingreso['fecha_hora_ingreso']) {
                 $errores[] = 'El egreso no puede ser anterior al ingreso ('
