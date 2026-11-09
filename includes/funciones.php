@@ -48,6 +48,33 @@ function unir_lista(array $elementos): string
     return $elementos ? implode(', ', $elementos) . ' y ' . $ultimo : (string) $ultimo;
 }
 
+/** Imprime una lista de errores de validación en una alerta roja. No imprime nada si está vacía. */
+function mostrar_errores(array $errores): void
+{
+    if (!$errores) {
+        return;
+    }
+    echo '<div class="alert alert-danger" role="alert"><ul class="mb-0">';
+    foreach ($errores as $error) {
+        echo '<li>' . e($error) . '</li>';
+    }
+    echo '</ul></div>';
+}
+
+/** Estados de un vehículo (columna vehiculo.estado) y cómo se muestran. */
+const ESTADOS_VEHICULO = [
+    'disponible'       => ['texto' => 'Disponible',        'color' => 'text-bg-success'],
+    'en_mantenimiento' => ['texto' => 'En mantenimiento',  'color' => 'text-bg-warning'],
+    'fuera_servicio'   => ['texto' => 'Fuera de servicio', 'color' => 'text-bg-danger'],
+];
+
+/** Etiqueta de color para el estado de un vehículo: verde, amarillo o rojo. */
+function etiqueta_estado_vehiculo(string $estado): string
+{
+    $info = ESTADOS_VEHICULO[$estado] ?? ['texto' => $estado, 'color' => 'text-bg-secondary'];
+    return '<span class="badge ' . $info['color'] . '">' . e($info['texto']) . '</span>';
+}
+
 /** Redirige a una ruta del proyecto y termina la ejecución. */
 function redirigir(string $ruta = ''): void
 {

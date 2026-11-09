@@ -37,14 +37,20 @@ $mensaje = tomar_mensaje();
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Iniciar sesión - MediFlota</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+    <link rel="icon" href="<?= e(url('assets/img/logo.svg')) ?>" type="image/svg+xml">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?= e(url('assets/css/estilos.css') . '?v=' . filemtime(__DIR__ . '/assets/css/estilos.css')) ?>">
 </head>
-<body class="bg-light">
-<main class="container d-flex align-items-center justify-content-center min-vh-100 py-4">
-    <div class="card shadow-sm w-100" style="max-width: 380px;">
-        <div class="card-body p-4">
-            <h1 class="h3 text-center mb-1">MediFlota</h1>
-            <p class="text-center text-muted small mb-4">Taller de vehículos · Vida Sinú</p>
+<body class="pagina-login">
+<main class="container d-flex flex-column align-items-center justify-content-center min-vh-100 py-4">
+    <div class="card shadow w-100" style="max-width: 380px;">
+        <div class="card-body p-4 p-sm-5">
+            <div class="text-center mb-4">
+                <img src="<?= e(url('assets/img/logo.svg')) ?>" class="logo mb-3" alt="">
+                <h1 class="h3 mb-1">MediFlota</h1>
+                <p class="text-muted small mb-0">Taller de vehículos · Vida Sinú</p>
+            </div>
 
             <?php if ($mensaje): ?>
                 <div class="alert alert-<?= e($mensaje['tipo']) ?> py-2"><?= e($mensaje['texto']) ?></div>
@@ -66,10 +72,11 @@ $mensaje = tomar_mensaje();
                     <input type="password" class="form-control" id="clave" name="clave"
                            autocomplete="current-password" required>
                 </div>
-                <button type="submit" class="btn btn-primary w-100">Ingresar</button>
+                <button type="submit" class="btn btn-primary w-100 py-2">Ingresar</button>
             </form>
         </div>
     </div>
+    <p class="pie-login small mt-4 mb-0 text-center">Control de ingresos, egresos y mantenimiento de la flota</p>
 </main>
 </body>
 </html>

@@ -9,7 +9,6 @@
 
 require_once __DIR__ . '/../../includes/sesion.php';
 require_once __DIR__ . '/costos.php';
-require_once __DIR__ . '/plantilla.php';
 requiere_perfil('administrador', 'tecnico');
 
 $u         = usuario_actual();
@@ -90,7 +89,8 @@ $repuestos = repuestos_de_ingreso($idIngreso);
 $total     = costo_total_ingreso($idIngreso);
 $tecnicos  = es_administrador() ? tecnicos_para_asignar($ingreso['id_tecnico'] !== null ? (int) $ingreso['id_tecnico'] : null) : [];
 
-plantilla_inicio('Ingreso ' . $ingreso['placa']);
+$titulo = 'Ingreso ' . $ingreso['placa'];
+require __DIR__ . '/../../includes/header.php';
 ?>
 <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
     <div>
@@ -280,4 +280,4 @@ plantilla_inicio('Ingreso ' . $ingreso['placa']);
         <?php endif; ?>
     </div>
 </div>
-<?php plantilla_fin(); ?>
+<?php require __DIR__ . '/../../includes/footer.php'; ?>

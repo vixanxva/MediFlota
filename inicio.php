@@ -1,43 +1,52 @@
 <?php
 /**
- * Página de inicio tras el login.
+ * Página de inicio tras el login: accesos a los módulos del perfil.
  *
- * Provisional: la plantilla con menú por perfil se hace en el issue #5,
- * que reemplazará este HTML por header.php / footer.php.
+ * Cuando exista el panel de disponibilidad (issue #8, modules/panel/),
+ * esta página envía directo allá, porque el panel es la página principal.
  */
 
 require_once __DIR__ . '/includes/sesion.php';
+require_once __DIR__ . '/includes/menu.php';
 requiere_login();
 
+if (is_file(__DIR__ . '/modules/panel/index.php')) {
+    // Si hay un mensaje guardado, se muestra en el panel.
+    redirigir('modules/panel/');
+}
+
 $u = usuario_actual();
-$mensaje = tomar_mensaje();
+$titulo = 'Inicio';
+require __DIR__ . '/includes/header.php';
 ?>
-<!doctype html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Inicio - MediFlota</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
-</head>
-<body class="bg-light">
-<main class="container py-5" style="max-width: 720px;">
-    <?php if ($mensaje): ?>
-        <div class="alert alert-<?= e($mensaje['tipo']) ?>"><?= e($mensaje['texto']) ?></div>
-    <?php endif; ?>
+<div class="mb-4">
+    <h1 class="h3 mb-1">Hola, <?= e($u['nombre']) ?></h1>
+    <p class="text-muted mb-0">Perfil: <?= e(nombre_perfil($u['perfil'])) ?>. Elige un módulo para empezar.</p>
+</div>
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-4">
-        <h1 class="h3 mb-0">Bienvenido, <?= e($u['nombre']) ?></h1>
-        <a href="<?= e(url('logout.php')) ?>" class="btn btn-outline-secondary btn-sm">Cerrar sesión</a>
-    </div>
-
-    <p>
-        Perfil:
-        <span class="badge <?= es_administrador() ? 'bg-primary' : 'bg-success' ?>">
-            <?= es_administrador() ? 'Administrador' : 'Técnico' ?>
-        </span>
-    </p>
-    <p class="text-muted">Los módulos del sistema aparecerán aquí a medida que se integren.</p>
-</main>
-</body>
-</html>
+<div class="row g-3">
+    <?php foreach (menu_del_usuario() as $opcion): ?>
+        <div class="col-sm-6 col-lg-4">
+            <?php if ($opcion['disponible']): ?>
+                <a href="<?= e(url($opcion['ruta'])) ?>"
+                   class="tarjeta-modulo card h-100 shadow-sm text-decoration-none text-reset">
+                    <div class="card-body">
+                        <h2 class="h5 text-primary"><?= e($opcion['titulo']) ?></h2>
+                        <p class="card-text text-muted small mb-0"><?= e($opcion['descripcion']) ?></p>
+                    </div>
+                </a>
+            <?php else: ?>
+                <div class="tarjeta-modulo card h-100 shadow-sm bg-body-tertiary">
+                    <div class="card-body">
+                        <h2 class="h5 text-secondary">
+                            <?= e($opcion['titulo']) ?>
+                            <span class="badge text-bg-light border fw-normal align-middle">En construcción</span>
+                        </h2>
+                        <p class="card-text text-muted small mb-0"><?= e($opcion['descripcion']) ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
+        </div>
+    <?php endforeach; ?>
+</div>
+<?php require __DIR__ . '/includes/footer.php'; ?>

@@ -147,14 +147,16 @@ function requiere_perfil(string ...$perfiles): void
 function denegar_acceso(string $motivo = 'Tu perfil no tiene permiso para ver esta página.'): void
 {
     http_response_code(403);
-    echo '<!doctype html><html lang="es"><head><meta charset="utf-8">'
-       . '<meta name="viewport" content="width=device-width, initial-scale=1">'
-       . '<title>Acceso denegado - MediFlota</title></head>'
-       . '<body style="font-family:sans-serif;text-align:center;padding:3rem 1rem">'
-       . '<h1>Acceso denegado</h1>'
-       . '<p>' . e($motivo) . '</p>'
-       . '<p><a href="' . e(url('inicio.php')) . '">Volver al inicio</a></p>'
-       . '</body></html>';
+    $titulo = 'Acceso denegado';
+    require __DIR__ . '/header.php';
+    ?>
+    <div class="text-center py-5">
+        <h1 class="h3">Acceso denegado</h1>
+        <p class="text-muted"><?= e($motivo) ?></p>
+        <a href="<?= e(url('inicio.php')) ?>" class="btn btn-primary">Volver al inicio</a>
+    </div>
+    <?php
+    require __DIR__ . '/footer.php';
     exit;
 }
 
