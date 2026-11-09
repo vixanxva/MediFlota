@@ -21,15 +21,22 @@ defined('DB_PASS') || define('DB_PASS', '');
 
 // Ruta del proyecto en la URL, sin "/" final.
 // Ej.: '/MediFlota' para http://localhost/MediFlota/
-// Si no se define, se calcula a partir de la carpeta del proyecto.
+// Si no se define, se calcula comparando la URL del script que se está
+// ejecutando con su ubicación dentro del proyecto. Funciona aunque el
+// proyecto esté enlazado (junction/symlink) dentro de htdocs.
 if (!defined('BASE_URL')) {
     $raiz    = str_replace('\\', '/', (string) realpath(__DIR__ . '/..'));
-    $docRoot = str_replace('\\', '/', (string) realpath($_SERVER['DOCUMENT_ROOT'] ?? ''));
-    $base    = ($docRoot !== '' && stripos($raiz, $docRoot) === 0)
-        ? substr($raiz, strlen($docRoot))
-        : '';
+    $archivo = str_replace('\\', '/', (string) realpath($_SERVER['SCRIPT_FILENAME'] ?? ''));
+    $urlScript = $_SERVER['SCRIPT_NAME'] ?? '';
+    $base = '';
+    if ($raiz !== '' && stripos($archivo, $raiz . '/') === 0) {
+        $relativa = substr($archivo, strlen($raiz));          // ej. /modules/vehiculos/index.php
+        if (strcasecmp(substr($urlScript, -strlen($relativa)), $relativa) === 0) {
+            $base = substr($urlScript, 0, -strlen($relativa)); // ej. /MediFlota
+        }
+    }
     define('BASE_URL', rtrim($base, '/'));
-    unset($raiz, $docRoot, $base);
+    unset($raiz, $archivo, $urlScript, $base, $relativa);
 }
 
 // Zona horaria de Colombia
