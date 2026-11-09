@@ -6,7 +6,6 @@
 
 require_once __DIR__ . '/../../includes/sesion.php';
 require_once __DIR__ . '/logica.php';
-require_once __DIR__ . '/plantilla.php';
 requiere_perfil('administrador');
 
 $errores = [];
@@ -33,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $vehiculos = vehiculos_para_ingreso();
-$estados   = ['disponible' => 'Disponible', 'fuera_servicio' => 'Fuera de servicio'];
 
-plantilla_inicio('Registrar ingreso');
+$titulo = 'Registrar ingreso';
+require __DIR__ . '/../../includes/header.php';
 ?>
-<div style="max-width: 640px;">
+<div class="contenido-angosto">
     <h1 class="h3 mb-3">Registrar ingreso</h1>
 
     <?php mostrar_errores($errores); ?>
@@ -58,7 +57,7 @@ plantilla_inicio('Registrar ingreso');
                                 data-km="<?= (int) $v['kilometraje'] ?>"
                                 <?= (string) $v['id_vehiculo'] === $datos['id_vehiculo'] ? 'selected' : '' ?>>
                             <?= e($v['placa'] . ' — ' . $v['marca'] . ' ' . $v['modelo']
-                                . ' (' . formato_numero($v['kilometraje']) . ' km, ' . $estados[$v['estado']] . ')') ?>
+                                . ' (' . formato_numero($v['kilometraje']) . ' km, ' . ESTADOS_VEHICULO[$v['estado']]['texto'] . ')') ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -118,4 +117,4 @@ plantilla_inicio('Registrar ingreso');
     actualizar();
 })();
 </script>
-<?php plantilla_fin(); ?>
+<?php require __DIR__ . '/../../includes/footer.php'; ?>

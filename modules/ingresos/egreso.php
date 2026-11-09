@@ -6,7 +6,6 @@
 
 require_once __DIR__ . '/../../includes/sesion.php';
 require_once __DIR__ . '/costos.php';
-require_once __DIR__ . '/plantilla.php';
 requiere_perfil('administrador', 'tecnico');
 
 $idIngreso = filter_var($_GET['id'] ?? '', FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
@@ -44,9 +43,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-plantilla_inicio('Registrar egreso');
+$titulo = 'Registrar egreso';
+require __DIR__ . '/../../includes/header.php';
 ?>
-<div style="max-width: 640px;">
+<div class="contenido-angosto">
     <h1 class="h3 mb-3">Registrar egreso</h1>
 
     <div class="card mb-3 shadow-sm">
@@ -117,4 +117,4 @@ plantilla_inicio('Registrar egreso');
     </form>
     <?php endif; ?>
 </div>
-<?php plantilla_fin(); ?>
+<?php require __DIR__ . '/../../includes/footer.php'; ?>
