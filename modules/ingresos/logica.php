@@ -82,7 +82,9 @@ function listar_ingresos(string $estado = 'todos', ?int $idTecnico = null): arra
     }
 
     $sql = 'SELECT i.id_ingreso, i.id_tecnico, i.fecha_hora_ingreso, i.kilometraje_ingreso,
-                   i.falla_reportada, i.fecha_hora_egreso, v.placa, v.tipo, t.nombre AS nombre_tecnico
+                   i.falla_reportada, i.fecha_hora_egreso, v.placa, v.tipo, t.nombre AS nombre_tecnico,
+                   (SELECT COALESCE(SUM(r.cantidad * r.costo_unitario), 0)
+                      FROM repuesto r WHERE r.id_ingreso = i.id_ingreso) AS costo_total
               FROM ingreso i
               JOIN vehiculo v ON v.id_vehiculo = i.id_vehiculo
               LEFT JOIN tecnico t ON t.id_tecnico = i.id_tecnico'
@@ -95,10 +97,11 @@ function listar_ingresos(string $estado = 'todos', ?int $idTecnico = null): arra
 }
 
 /**
- * ¿El usuario puede registrar el egreso de este ingreso?
+ * ¿El usuario puede ver y trabajar este ingreso (detalle, diagnóstico,
+ * repuestos y egreso)?
  * Administrador: cualquiera. Técnico: solo los que tiene asignados.
  */
-function puede_registrar_egreso(array $usuario, array $ingreso): bool
+function puede_gestionar_ingreso(array $usuario, array $ingreso): bool
 {
     if ($usuario['perfil'] === 'administrador') {
         return true;
