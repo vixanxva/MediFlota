@@ -55,6 +55,7 @@ plantilla_inicio('Ingresos y egresos');
                     <th>Técnico</th>
                     <th>Estado</th>
                     <th>Egreso</th>
+                    <th class="text-end">Costo</th>
                     <th></th>
                 </tr>
             </thead>
@@ -77,9 +78,12 @@ plantilla_inicio('Ingresos y egresos');
                         <?php endif; ?>
                     </td>
                     <td class="text-nowrap"><?= e(formato_fecha_hora($i['fecha_hora_egreso'])) ?></td>
-                    <td class="text-end">
-                        <?php if ($abierto && puede_registrar_egreso($u, $i)): ?>
-                            <a class="btn btn-sm btn-outline-success text-nowrap"
+                    <td class="text-end text-nowrap"><?= e(formato_pesos($i['costo_total'])) ?></td>
+                    <td class="text-end text-nowrap">
+                        <a class="btn btn-sm btn-outline-primary"
+                           href="<?= e(url('modules/ingresos/detalle.php?id=' . $i['id_ingreso'])) ?>">Ver</a>
+                        <?php if ($abierto && puede_gestionar_ingreso($u, $i)): ?>
+                            <a class="btn btn-sm btn-outline-success"
                                href="<?= e(url('modules/ingresos/egreso.php?id=' . $i['id_ingreso'])) ?>">Registrar egreso</a>
                         <?php endif; ?>
                     </td>

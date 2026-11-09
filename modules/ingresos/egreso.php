@@ -5,7 +5,7 @@
  */
 
 require_once __DIR__ . '/../../includes/sesion.php';
-require_once __DIR__ . '/logica.php';
+require_once __DIR__ . '/costos.php';
 require_once __DIR__ . '/plantilla.php';
 requiere_perfil('administrador', 'tecnico');
 
@@ -16,12 +16,12 @@ if (!$ingreso) {
     guardar_mensaje('El ingreso solicitado no existe.', 'danger');
     redirigir('modules/ingresos/');
 }
-if (!puede_registrar_egreso(usuario_actual(), $ingreso)) {
+if (!puede_gestionar_ingreso(usuario_actual(), $ingreso)) {
     denegar_acceso('Solo puedes registrar el egreso de los ingresos que tienes asignados.');
 }
 if ($ingreso['fecha_hora_egreso'] !== null) {
     guardar_mensaje("El ingreso del vehículo {$ingreso['placa']} ya tiene registrado su egreso.", 'warning');
-    redirigir('modules/ingresos/');
+    redirigir('modules/ingresos/detalle.php?id=' . $idIngreso);
 }
 
 $errores = [];
@@ -64,14 +64,31 @@ plantilla_inicio('Registrar egreso');
                 <dd class="col-sm-8"><?= nl2br(e($ingreso['falla_reportada'])) ?></dd>
                 <dt class="col-sm-4">Diagnóstico</dt>
                 <dd class="col-sm-8"><?= $ingreso['diagnostico'] !== null ? nl2br(e($ingreso['diagnostico'])) : '<span class="text-muted">Sin registrar</span>' ?></dd>
+                <dt class="col-sm-4">Tipo de mantenimiento</dt>
+                <dd class="col-sm-8"><?= $ingreso['tipo_mantenimiento'] !== null ? e(TIPOS_MANTENIMIENTO[$ingreso['tipo_mantenimiento']]) : '<span class="text-muted">Sin registrar</span>' ?></dd>
                 <dt class="col-sm-4">Técnico</dt>
-                <dd class="col-sm-8 mb-0"><?= $ingreso['nombre_tecnico'] !== null ? e($ingreso['nombre_tecnico']) : '<span class="text-muted">Sin asignar</span>' ?></dd>
+                <dd class="col-sm-8"><?= $ingreso['nombre_tecnico'] !== null ? e($ingreso['nombre_tecnico']) : '<span class="text-muted">Sin asignar</span>' ?></dd>
+                <dt class="col-sm-4">Costo total</dt>
+                <dd class="col-sm-8 mb-0">
+                    <?= e(formato_pesos(costo_total_ingreso($idIngreso))) ?>
+                    <a href="<?= e(url('modules/ingresos/detalle.php?id=' . $idIngreso)) ?>" class="ms-2">Ver detalle</a>
+                </dd>
             </dl>
         </div>
     </div>
 
     <?php mostrar_errores($errores); ?>
 
+    <?php if ($faltantes = datos_faltantes_para_egreso($ingreso)): ?>
+        <div class="alert alert-warning">
+            <p class="mb-2">
+                Para registrar el egreso, primero completa en el detalle del ingreso:
+                <strong><?= e(implode(', ', $faltantes)) ?></strong>.
+            </p>
+            <a href="<?= e(url('modules/ingresos/detalle.php?id=' . $idIngreso)) ?>" class="btn btn-sm btn-primary">Ir al detalle</a>
+            <a href="<?= e(url('modules/ingresos/')) ?>" class="btn btn-sm btn-outline-secondary">Volver</a>
+        </div>
+    <?php else: ?>
     <form method="post" class="bg-white p-4 rounded shadow-sm">
         <?= csrf_campo() ?>
 
@@ -98,5 +115,6 @@ plantilla_inicio('Registrar egreso');
             <a href="<?= e(url('modules/ingresos/')) ?>" class="btn btn-outline-secondary">Cancelar</a>
         </div>
     </form>
+    <?php endif; ?>
 </div>
 <?php plantilla_fin(); ?>
