@@ -41,6 +41,13 @@ function formato_pesos($valor): string
     return '$ ' . formato_numero($valor, $decimales);
 }
 
+/** Une elementos en español: ['a'] -> 'a'; ['a','b','c'] -> 'a, b y c'. */
+function unir_lista(array $elementos): string
+{
+    $ultimo = array_pop($elementos);
+    return $elementos ? implode(', ', $elementos) . ' y ' . $ultimo : (string) $ultimo;
+}
+
 /** Redirige a una ruta del proyecto y termina la ejecución. */
 function redirigir(string $ruta = ''): void
 {
