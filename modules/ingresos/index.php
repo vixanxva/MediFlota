@@ -6,7 +6,6 @@
 
 require_once __DIR__ . '/../../includes/sesion.php';
 require_once __DIR__ . '/logica.php';
-require_once __DIR__ . '/plantilla.php';
 requiere_perfil('administrador', 'tecnico');
 
 $u = usuario_actual();
@@ -19,7 +18,8 @@ if (!is_string($estado) || !isset($filtros[$estado])) {
 
 $ingresos = listar_ingresos($estado, es_administrador() ? null : $u['id_tecnico']);
 
-plantilla_inicio('Ingresos y egresos');
+$titulo = 'Ingresos y egresos';
+require __DIR__ . '/../../includes/header.php';
 ?>
 <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
     <h1 class="h3 mb-0">Ingresos y egresos</h1>
@@ -68,7 +68,7 @@ plantilla_inicio('Ingresos y egresos');
                     </td>
                     <td class="text-nowrap"><?= e(formato_fecha_hora($i['fecha_hora_ingreso'])) ?></td>
                     <td class="text-end text-nowrap"><?= e(formato_numero($i['kilometraje_ingreso'])) ?></td>
-                    <td style="min-width: 220px;"><?= e(mb_strimwidth($i['falla_reportada'], 0, 90, '…')) ?></td>
+                    <td class="columna-texto"><?= e(mb_strimwidth($i['falla_reportada'], 0, 90, '…')) ?></td>
                     <td><?= $i['nombre_tecnico'] !== null ? e($i['nombre_tecnico']) : '<span class="text-muted">Sin asignar</span>' ?></td>
                     <td>
                         <?php if ($abierto): ?>
@@ -79,13 +79,15 @@ plantilla_inicio('Ingresos y egresos');
                     </td>
                     <td class="text-nowrap"><?= e(formato_fecha_hora($i['fecha_hora_egreso'])) ?></td>
                     <td class="text-end text-nowrap"><?= e(formato_pesos($i['costo_total'])) ?></td>
-                    <td class="text-end text-nowrap">
-                        <a class="btn btn-sm btn-outline-primary"
-                           href="<?= e(url('modules/ingresos/detalle.php?id=' . $i['id_ingreso'])) ?>">Ver</a>
-                        <?php if ($abierto && puede_gestionar_ingreso($u, $i)): ?>
-                            <a class="btn btn-sm btn-outline-success"
-                               href="<?= e(url('modules/ingresos/egreso.php?id=' . $i['id_ingreso'])) ?>">Registrar egreso</a>
-                        <?php endif; ?>
+                    <td class="text-nowrap">
+                        <div class="d-flex flex-column gap-1">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="<?= e(url('modules/ingresos/detalle.php?id=' . $i['id_ingreso'])) ?>">Ver</a>
+                            <?php if ($abierto && puede_gestionar_ingreso($u, $i)): ?>
+                                <a class="btn btn-sm btn-outline-success" title="Registrar egreso"
+                                   href="<?= e(url('modules/ingresos/egreso.php?id=' . $i['id_ingreso'])) ?>">Egreso</a>
+                            <?php endif; ?>
+                        </div>
                     </td>
                 </tr>
             <?php endforeach; ?>
@@ -93,4 +95,4 @@ plantilla_inicio('Ingresos y egresos');
         </table>
     </div>
 <?php endif; ?>
-<?php plantilla_fin(); ?>
+<?php require __DIR__ . '/../../includes/footer.php'; ?>
