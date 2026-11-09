@@ -82,7 +82,9 @@ function listar_ingresos(string $estado = 'todos', ?int $idTecnico = null): arra
     }
 
     $sql = 'SELECT i.id_ingreso, i.id_tecnico, i.fecha_hora_ingreso, i.kilometraje_ingreso,
-                   i.falla_reportada, i.fecha_hora_egreso, v.placa, v.tipo, t.nombre AS nombre_tecnico
+                   i.falla_reportada, i.fecha_hora_egreso, v.placa, v.tipo, t.nombre AS nombre_tecnico,
+                   (SELECT COALESCE(SUM(r.cantidad * r.costo_unitario), 0)
+                      FROM repuesto r WHERE r.id_ingreso = i.id_ingreso) AS costo_total
               FROM ingreso i
               JOIN vehiculo v ON v.id_vehiculo = i.id_vehiculo
               LEFT JOIN tecnico t ON t.id_tecnico = i.id_tecnico'
@@ -95,10 +97,11 @@ function listar_ingresos(string $estado = 'todos', ?int $idTecnico = null): arra
 }
 
 /**
- * ¿El usuario puede registrar el egreso de este ingreso?
+ * ¿El usuario puede ver y trabajar este ingreso (detalle, diagnóstico,
+ * repuestos y egreso)?
  * Administrador: cualquiera. Técnico: solo los que tiene asignados.
  */
-function puede_registrar_egreso(array $usuario, array $ingreso): bool
+function puede_gestionar_ingreso(array $usuario, array $ingreso): bool
 {
     if ($usuario['perfil'] === 'administrador') {
         return true;
@@ -209,7 +212,29 @@ function registrar_ingreso(array $datos, ?int &$idIngreso = null): array
 }
 
 /**
+ * Datos que faltan para poder registrar el egreso de un ingreso.
+ * Un ingreso solo se cierra con diagnóstico, tipo de mantenimiento y
+ * técnico encargado, para que el historial (#9) quede completo.
+ * Devuelve los nombres de los campos faltantes; vacío si está completo.
+ */
+function datos_faltantes_para_egreso(array $ingreso): array
+{
+    $faltantes = [];
+    if (trim((string) $ingreso['diagnostico']) === '') {
+        $faltantes[] = 'el diagnóstico';
+    }
+    if ($ingreso['tipo_mantenimiento'] === null) {
+        $faltantes[] = 'el tipo de mantenimiento';
+    }
+    if ($ingreso['id_tecnico'] === null) {
+        $faltantes[] = 'el técnico encargado';
+    }
+    return $faltantes;
+}
+
+/**
  * Registra el egreso (salida) de un ingreso abierto.
+ * Exige que el ingreso tenga diagnóstico, tipo de mantenimiento y técnico.
  * El vehículo pasa a 'disponible'.
  *
  * $datos: fecha, hora, trabajo_realizado
@@ -240,7 +265,9 @@ function registrar_egreso(int $idIngreso, array $datos): array
     $pdo->beginTransaction();
     try {
         $stmt = $pdo->prepare(
-            'SELECT id_vehiculo, fecha_hora_ingreso, fecha_hora_egreso FROM ingreso WHERE id_ingreso = ? FOR UPDATE'
+            'SELECT id_vehiculo, fecha_hora_ingreso, fecha_hora_egreso,
+                    diagnostico, tipo_mantenimiento, id_tecnico
+               FROM ingreso WHERE id_ingreso = ? FOR UPDATE'
         );
         $stmt->execute([$idIngreso]);
         $ingreso = $stmt->fetch();
@@ -249,9 +276,15 @@ function registrar_egreso(int $idIngreso, array $datos): array
             $errores[] = 'El ingreso no existe.';
         } elseif ($ingreso['fecha_hora_egreso'] !== null) {
             $errores[] = 'Este ingreso ya tiene registrado su egreso.';
-        } elseif ($fechaHora < $ingreso['fecha_hora_ingreso']) {
-            $errores[] = 'El egreso no puede ser anterior al ingreso ('
-                       . formato_fecha_hora($ingreso['fecha_hora_ingreso']) . ').';
+        } else {
+            $faltantes = datos_faltantes_para_egreso($ingreso);
+            if ($faltantes) {
+                $errores[] = 'Antes del egreso registra en el detalle del ingreso: ' . implode(', ', $faltantes) . '.';
+            }
+            if ($fechaHora < $ingreso['fecha_hora_ingreso']) {
+                $errores[] = 'El egreso no puede ser anterior al ingreso ('
+                           . formato_fecha_hora($ingreso['fecha_hora_ingreso']) . ').';
+            }
         }
 
         if ($errores) {
