@@ -212,7 +212,29 @@ function registrar_ingreso(array $datos, ?int &$idIngreso = null): array
 }
 
 /**
+ * Datos que faltan para poder registrar el egreso de un ingreso.
+ * Un ingreso solo se cierra con diagnóstico, tipo de mantenimiento y
+ * técnico encargado, para que el historial (#9) quede completo.
+ * Devuelve los nombres de los campos faltantes; vacío si está completo.
+ */
+function datos_faltantes_para_egreso(array $ingreso): array
+{
+    $faltantes = [];
+    if (trim((string) $ingreso['diagnostico']) === '') {
+        $faltantes[] = 'el diagnóstico';
+    }
+    if ($ingreso['tipo_mantenimiento'] === null) {
+        $faltantes[] = 'el tipo de mantenimiento';
+    }
+    if ($ingreso['id_tecnico'] === null) {
+        $faltantes[] = 'el técnico encargado';
+    }
+    return $faltantes;
+}
+
+/**
  * Registra el egreso (salida) de un ingreso abierto.
+ * Exige que el ingreso tenga diagnóstico, tipo de mantenimiento y técnico.
  * El vehículo pasa a 'disponible'.
  *
  * $datos: fecha, hora, trabajo_realizado
@@ -243,7 +265,9 @@ function registrar_egreso(int $idIngreso, array $datos): array
     $pdo->beginTransaction();
     try {
         $stmt = $pdo->prepare(
-            'SELECT id_vehiculo, fecha_hora_ingreso, fecha_hora_egreso FROM ingreso WHERE id_ingreso = ? FOR UPDATE'
+            'SELECT id_vehiculo, fecha_hora_ingreso, fecha_hora_egreso,
+                    diagnostico, tipo_mantenimiento, id_tecnico
+               FROM ingreso WHERE id_ingreso = ? FOR UPDATE'
         );
         $stmt->execute([$idIngreso]);
         $ingreso = $stmt->fetch();
@@ -252,9 +276,15 @@ function registrar_egreso(int $idIngreso, array $datos): array
             $errores[] = 'El ingreso no existe.';
         } elseif ($ingreso['fecha_hora_egreso'] !== null) {
             $errores[] = 'Este ingreso ya tiene registrado su egreso.';
-        } elseif ($fechaHora < $ingreso['fecha_hora_ingreso']) {
-            $errores[] = 'El egreso no puede ser anterior al ingreso ('
-                       . formato_fecha_hora($ingreso['fecha_hora_ingreso']) . ').';
+        } else {
+            $faltantes = datos_faltantes_para_egreso($ingreso);
+            if ($faltantes) {
+                $errores[] = 'Antes del egreso registra en el detalle del ingreso: ' . implode(', ', $faltantes) . '.';
+            }
+            if ($fechaHora < $ingreso['fecha_hora_ingreso']) {
+                $errores[] = 'El egreso no puede ser anterior al ingreso ('
+                           . formato_fecha_hora($ingreso['fecha_hora_ingreso']) . ').';
+            }
         }
 
         if ($errores) {

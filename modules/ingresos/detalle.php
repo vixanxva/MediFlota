@@ -100,6 +100,9 @@ plantilla_inicio('Ingreso ' . $ingreso['placa']);
         </h1>
         <?php if ($abierto): ?>
             <span class="badge bg-warning text-dark">En el taller</span>
+            <?php if ($faltantes = datos_faltantes_para_egreso($ingreso)): ?>
+                <div class="small text-muted mt-1">Para el egreso falta registrar: <?= e(implode(', ', $faltantes)) ?>.</div>
+            <?php endif; ?>
         <?php else: ?>
             <span class="badge bg-success">Con egreso</span>
         <?php endif; ?>
