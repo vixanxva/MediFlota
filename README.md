@@ -52,6 +52,13 @@ MediFlota/
 - Al terminar, abrir un Pull Request hacia `develop` y escribir `Closes #<numero>` en la descripción.
 - Cuando `develop` esté estable, se fusiona a `main`.
 
+### Reglas de revisión
+
+- **Nadie sube cambios directamente a `develop` ni a `main`.** Todo entra por Pull Request.
+- Cada integrante abre un PR con su tarea o comenta en el issue correspondiente.
+- **Solo Jeison Villanueva (@vixanxva) aprueba los PR**, después de revisarlos. Sin su aprobación, GitHub no permite la fusión.
+- Si se solicitan cambios, se corrigen en la misma rama y el PR se actualiza solo.
+
 ```bash
 git checkout develop
 git pull
