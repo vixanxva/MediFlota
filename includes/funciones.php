@@ -17,6 +17,22 @@ function url(string $ruta = ''): string
     return BASE_URL . '/' . ltrim($ruta, '/');
 }
 
+/** Fecha y hora de la BD ('2026-11-09 14:20:00') como '09/11/2026 2:20 p. m.'. Vacío si es null. */
+function formato_fecha_hora(?string $fechaHora): string
+{
+    if ($fechaHora === null || $fechaHora === '') {
+        return '';
+    }
+    $t = strtotime($fechaHora);
+    return date('d/m/Y g:i', $t) . (date('H', $t) < 12 ? ' a. m.' : ' p. m.');
+}
+
+/** Número con separador de miles colombiano: 152300 -> '152.300'. */
+function formato_numero($numero, int $decimales = 0): string
+{
+    return number_format((float) $numero, $decimales, ',', '.');
+}
+
 /** Redirige a una ruta del proyecto y termina la ejecución. */
 function redirigir(string $ruta = ''): void
 {

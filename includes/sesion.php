@@ -139,17 +139,23 @@ function requiere_perfil(string ...$perfiles): void
     requiere_login();
 
     if (!in_array(usuario_actual()['perfil'], $perfiles, true)) {
-        http_response_code(403);
-        echo '<!doctype html><html lang="es"><head><meta charset="utf-8">'
-           . '<meta name="viewport" content="width=device-width, initial-scale=1">'
-           . '<title>Acceso denegado - MediFlota</title></head>'
-           . '<body style="font-family:sans-serif;text-align:center;padding:3rem 1rem">'
-           . '<h1>Acceso denegado</h1>'
-           . '<p>Tu perfil no tiene permiso para ver esta página.</p>'
-           . '<p><a href="' . e(url('inicio.php')) . '">Volver al inicio</a></p>'
-           . '</body></html>';
-        exit;
+        denegar_acceso();
     }
+}
+
+/** Responde 403 "Acceso denegado" y termina. Útil para permisos por registro (ej. un ingreso ajeno). */
+function denegar_acceso(string $motivo = 'Tu perfil no tiene permiso para ver esta página.'): void
+{
+    http_response_code(403);
+    echo '<!doctype html><html lang="es"><head><meta charset="utf-8">'
+       . '<meta name="viewport" content="width=device-width, initial-scale=1">'
+       . '<title>Acceso denegado - MediFlota</title></head>'
+       . '<body style="font-family:sans-serif;text-align:center;padding:3rem 1rem">'
+       . '<h1>Acceso denegado</h1>'
+       . '<p>' . e($motivo) . '</p>'
+       . '<p><a href="' . e(url('inicio.php')) . '">Volver al inicio</a></p>'
+       . '</body></html>';
+    exit;
 }
 
 /** Guarda un mensaje para mostrarlo en la siguiente página (tipo: success, danger, warning, info). */
