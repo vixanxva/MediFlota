@@ -112,6 +112,8 @@ require __DIR__ . '/../../includes/header.php';
                     <td class="text-end text-nowrap">
                         <a class="btn btn-sm btn-outline-primary"
                            href="<?= e(url('modules/vehiculos/formulario.php?id=' . $v['id_vehiculo'])) ?>">Editar</a>
+                        <a class="btn btn-sm btn-outline-secondary"
+                           href="<?= e(url('modules/historial/?id_vehiculo=' . $v['id_vehiculo'])) ?>">Historial</a>
                         <?php if ($activo && $v['estado'] !== 'en_mantenimiento'): ?>
                             <a class="btn btn-sm btn-outline-success"
                                href="<?= e(url('modules/ingresos/nuevo.php?id_vehiculo=' . $v['id_vehiculo'])) ?>">Ingresar al taller</a>
