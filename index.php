@@ -30,6 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $mensaje = tomar_mensaje();
+
+// Instalación nueva (schema.sql sin seed.sql): todavía no hay ningún usuario.
+require_once __DIR__ . '/modules/usuarios/logica.php';
+$sinUsuarios = !hay_usuarios();
 ?>
 <!doctype html>
 <html lang="es">
@@ -54,6 +58,13 @@ $mensaje = tomar_mensaje();
 
             <?php if ($mensaje): ?>
                 <div class="alert alert-<?= e($mensaje['tipo']) ?> py-2"><?= e($mensaje['texto']) ?></div>
+            <?php endif; ?>
+
+            <?php if ($sinUsuarios): ?>
+                <div class="alert alert-warning py-2">
+                    Todavía no hay usuarios.
+                    <a href="<?= e(url('instalar.php')) ?>" class="alert-link">Crea el primer administrador</a>.
+                </div>
             <?php endif; ?>
 
             <?php if ($error): ?>

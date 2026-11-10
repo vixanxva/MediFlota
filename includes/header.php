@@ -61,7 +61,8 @@ $encabezadoCss     = 'assets/css/estilos.css';
             <div class="d-flex align-items-center gap-3 py-2 py-lg-0">
                 <span class="navbar-text lh-sm">
                     <span class="text-white"><?= e($encabezadoUsuario['nombre']) ?></span><br>
-                    <small><?= e(nombre_perfil($encabezadoUsuario['perfil'])) ?></small>
+                    <small><?= e(nombre_perfil($encabezadoUsuario['perfil'])) ?> ·
+                        <a href="<?= e(url('cambiar_clave.php')) ?>" class="link-light">Cambiar contraseña</a></small>
                 </span>
                 <a class="btn btn-outline-light btn-sm" href="<?= e(url('logout.php')) ?>">Cerrar sesión</a>
             </div>
