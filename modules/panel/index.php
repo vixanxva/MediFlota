@@ -103,7 +103,8 @@ require __DIR__ . '/../../includes/header.php';
             <?php foreach ($vehiculos as $v): ?>
                 <tr>
                     <td>
-                        <strong><?= e($v['placa']) ?></strong>
+                        <a href="<?= e(url('modules/historial/?id_vehiculo=' . $v['id_vehiculo'])) ?>"
+                           class="fw-bold text-reset" title="Ver historial"><?= e($v['placa']) ?></a>
                         <div class="small text-muted"><?= e(TIPOS_VEHICULO[$v['tipo']]) ?></div>
                     </td>
                     <td><?= e($v['marca'] . ' ' . $v['modelo']) ?></td>
