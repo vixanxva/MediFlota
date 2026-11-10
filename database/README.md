@@ -20,7 +20,7 @@ Los dos archivos se pueden ejecutar varias veces: `schema.sql` borra y vuelve a 
 | `admin` | `mediflota123` | administrador |
 | `tecnico` | `mediflota123` | técnico (enlazado a Carlos Andrés Petro Hoyos) |
 
-> ⚠️ Son solo para desarrollo. Deben cambiarse en producción.
+> ⚠️ Son solo para desarrollo. En el taller **no se importa `seed.sql`**. Con la tabla `usuario` vacía, el primer administrador se crea en `instalar.php`, y los demás usuarios en el módulo Usuarios (ver el README principal).
 
 ## Relaciones
 

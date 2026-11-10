@@ -29,8 +29,21 @@ Equipo: Andrés Calderín, Sebastián Caraballo y Jeison Villanueva. Docente: Pa
    ```bash
    git clone https://github.com/vixanxva/MediFlota.git
    ```
-3. En phpMyAdmin, importar `database/schema.sql` y luego `database/seed.sql`.
+3. En phpMyAdmin, importar `database/schema.sql` y luego `database/seed.sql` (datos de prueba; usuarios `admin` y `tecnico`, contraseña `mediflota123`).
 4. Abrir `http://localhost/MediFlota/`.
+
+## Instalación en el taller (sin datos de prueba)
+
+1. Pasos 1 y 2 de arriba, con la versión de `main`.
+2. Importar **solo** `database/schema.sql`. No importar `seed.sql`.
+3. Abrir `http://localhost/MediFlota/` y hacer clic en **«Crea el primer administrador»** (`instalar.php`). Hacerlo enseguida: esa página solo funciona mientras no exista ningún usuario y después se cierra sola.
+4. Entrar con ese administrador y registrar:
+   1. los **vehículos**;
+   2. los **técnicos**;
+   3. los **usuarios**. Cada técnico que vaya a entrar al sistema necesita su usuario.
+5. Entregar a cada persona su contraseña de forma privada. Cada quien la cambia en **«Cambiar contraseña»**, junto a su nombre arriba a la derecha.
+
+Si alguien olvida su contraseña, un administrador la restablece en **Usuarios**.
 
 ## Estructura de carpetas
 
@@ -39,9 +52,11 @@ MediFlota/
 ├── config/      # conexión a la base de datos
 ├── database/    # schema.sql y seed.sql
 ├── includes/    # header.php, footer.php, menu.php, sesión y funciones de ayuda
-├── modules/     # una carpeta por módulo (panel, vehiculos, tecnicos, ingresos, historial)
+├── modules/     # una carpeta por módulo (panel, vehiculos, tecnicos, ingresos, historial, usuarios)
 ├── assets/      # css/estilos.css, js, img/logo.svg
 ├── index.php    # login
+├── instalar.php # crea el primer administrador (solo con la tabla usuario vacía)
+├── cambiar_clave.php # cada usuario cambia su contraseña
 ├── inicio.php   # página de inicio tras el login
 └── logout.php   # cerrar sesión
 ```
