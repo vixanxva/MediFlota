@@ -38,6 +38,7 @@ Equipo: Andrés Calderín, Sebastián Caraballo y Jeison Villanueva. Docente: Pa
 MediFlota/
 ├── config/      # conexión a la base de datos
 ├── database/    # schema.sql y seed.sql
+├── docs/        # pruebas funcionales y documentación
 ├── includes/    # header.php, footer.php, menu.php, sesión y funciones de ayuda
 ├── modules/     # una carpeta por módulo (panel, vehiculos, tecnicos, ingresos, historial)
 ├── assets/      # css/estilos.css, js, img/logo.svg
