@@ -75,6 +75,45 @@ function etiqueta_estado_vehiculo(string $estado): string
     return '<span class="badge ' . $info['color'] . '">' . e($info['texto']) . '</span>';
 }
 
+/** Tipos de vehículo (columna vehiculo.tipo). */
+const TIPOS_VEHICULO = ['ambulancia' => 'Ambulancia', 'otro' => 'Otro'];
+
+/** Días antes del vencimiento de la revisión técnico-mecánica en que se empieza a avisar. */
+const DIAS_AVISO_RTM = 30;
+
+/** Fecha de la BD ('2026-11-09') como '09/11/2026'. Vacío si es null. */
+function formato_fecha(?string $fecha): string
+{
+    return $fecha === null || $fecha === '' ? '' : date('d/m/Y', strtotime($fecha));
+}
+
+/**
+ * Situación de la revisión técnico-mecánica (RTM):
+ * 'vencida', 'por_vencer' (faltan DIAS_AVISO_RTM días o menos) o 'vigente'.
+ */
+function estado_rtm(string $vencimiento): string
+{
+    $hoy = date('Y-m-d');
+    if ($vencimiento < $hoy) {
+        return 'vencida';
+    }
+    return $vencimiento <= date('Y-m-d', strtotime('+' . DIAS_AVISO_RTM . ' days')) ? 'por_vencer' : 'vigente';
+}
+
+/** Fecha de vencimiento de la RTM con una etiqueta si está vencida o por vencer. */
+function etiqueta_rtm(string $vencimiento): string
+{
+    $html = e(formato_fecha($vencimiento));
+    switch (estado_rtm($vencimiento)) {
+        case 'vencida':
+            return $html . ' <span class="badge text-bg-danger">Vencida</span>';
+        case 'por_vencer':
+            return $html . ' <span class="badge text-bg-warning">Por vencer</span>';
+        default:
+            return $html;
+    }
+}
+
 /** Redirige a una ruta del proyecto y termina la ejecución. */
 function redirigir(string $ruta = ''): void
 {
