@@ -42,6 +42,12 @@ const MENU_PRINCIPAL = [
         'descripcion' => 'Mantenimientos de cada vehículo y su costo acumulado.',
         'perfiles'    => ['administrador', 'tecnico'],
     ],
+    [
+        'titulo'      => 'Usuarios',
+        'ruta'        => 'modules/usuarios/',
+        'descripcion' => 'Cuentas para entrar al sistema y sus contraseñas.',
+        'perfiles'    => ['administrador'],
+    ],
 ];
 
 /**
