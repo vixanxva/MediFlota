@@ -89,7 +89,9 @@ Funciones disponibles (`includes/sesion.php` y `includes/funciones.php`):
 | `guardar_mensaje($texto, $tipo)` / `tomar_mensaje()` | Mensaje para mostrar en la siguiente página (ej. "Vehículo guardado"). |
 | `mostrar_errores($errores)` | Lista de errores de validación en una alerta roja (no imprime nada si está vacía). |
 | `etiqueta_estado_vehiculo($estado)` | Etiqueta de color del estado: verde disponible, amarillo en mantenimiento, rojo fuera de servicio. Textos en `ESTADOS_VEHICULO`. |
-| `formato_fecha_hora()`, `formato_numero()`, `formato_pesos()` | `09/11/2026 2:20 p. m.`, `152.300`, `$ 1.450.000`. |
+| `etiqueta_rtm($vencimiento)` / `estado_rtm($vencimiento)` | Fecha de la revisión técnico-mecánica con etiqueta «Vencida» o «Por vencer» (`DIAS_AVISO_RTM` = 30 días antes). |
+| `TIPOS_VEHICULO` | `['ambulancia' => 'Ambulancia', 'otro' => 'Otro']`. |
+| `formato_fecha()`, `formato_fecha_hora()`, `formato_numero()`, `formato_pesos()` | `09/11/2026`, `09/11/2026 2:20 p. m.`, `152.300`, `$ 1.450.000`. |
 
 ## Flujo de trabajo
 
