@@ -76,6 +76,21 @@ a.tarjeta-modulo:focus {
     box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1) !important;
 }
 
+/* Contadores del panel (clic = filtrar por ese estado). */
+.contador {
+    transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.contador:hover,
+.contador:focus {
+    transform: translateY(-2px);
+    box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .1) !important;
+}
+
+.contador.seleccionado {
+    background-color: #eef4ff;
+}
+
 /* ---------- Pie ---------- */
 
 .pie {
