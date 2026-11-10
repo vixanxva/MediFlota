@@ -137,9 +137,10 @@ function guardar_diagnostico(int $idIngreso, array $datos, array $usuario): arra
         // El técnico no puede cambiar la asignación: se conserva la actual.
         $nuevoTecnico = $esAdmin ? $idTecnico : (int) $ingreso['id_tecnico'];
 
-        // Si cambia el técnico, el nuevo debe existir y estar activo.
+        // Si cambia el técnico, el nuevo debe existir y estar activo. Se bloquea su
+        // fila para que no lo desactiven mientras se le asigna (ver modules/tecnicos/).
         if ($nuevoTecnico !== null && $nuevoTecnico !== (int) $ingreso['id_tecnico']) {
-            $stmt = $pdo->prepare('SELECT activo FROM tecnico WHERE id_tecnico = ?');
+            $stmt = $pdo->prepare('SELECT activo FROM tecnico WHERE id_tecnico = ? LOCK IN SHARE MODE');
             $stmt->execute([$nuevoTecnico]);
             if ((string) $stmt->fetchColumn() !== '1') {
                 return ['El técnico seleccionado no existe o está inactivo.'];

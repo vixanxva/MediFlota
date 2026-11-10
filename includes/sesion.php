@@ -112,7 +112,7 @@ function requiere_login(): void
     }
 
     $stmt = db()->prepare(
-        'SELECT u.perfil
+        'SELECT u.perfil, COALESCE(t.nombre, u.usuario) AS nombre
            FROM usuario u
            LEFT JOIN tecnico t ON t.id_tecnico = u.id_tecnico
           WHERE u.id_usuario = ?
@@ -120,17 +120,19 @@ function requiere_login(): void
             AND (u.id_tecnico IS NULL OR t.activo = 1)'
     );
     $stmt->execute([$u['id_usuario']]);
-    $perfil = $stmt->fetchColumn();
+    $fila = $stmt->fetch();
 
-    if ($perfil === false) {
+    if ($fila === false) {
         cerrar_sesion();
         session_start();
         guardar_mensaje('Tu usuario fue desactivado. Comunícate con el administrador.', 'danger');
         redirigir('index.php');
     }
 
-    // Si el administrador cambió el perfil, se aplica sin volver a iniciar sesión.
-    $_SESSION['usuario']['perfil'] = $perfil;
+    // Si el administrador cambió el perfil o el nombre del técnico,
+    // se aplica sin volver a iniciar sesión.
+    $_SESSION['usuario']['perfil'] = $fila['perfil'];
+    $_SESSION['usuario']['nombre'] = $fila['nombre'];
 }
 
 /** Exige sesión y que el usuario tenga alguno de los perfiles indicados. Si no, error 403. */
