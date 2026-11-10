@@ -129,7 +129,7 @@ En los registros de Apache y PHP no quedó ningún aviso, *warning* ni error del
 
 | # | Hallazgo | Gravedad | Estado |
 |---|---|---|---|
-| H1 | **No hay forma de crear usuarios ni cambiar contraseñas sin `seed.sql`.** El #14 instala solo con `schema.sql`, así que la tabla `usuario` queda vacía y nadie puede iniciar sesión. Tampoco existe una pantalla para crear usuarios, restablecer contraseñas o cambiar la propia. | Alta: bloquea el #14 | Issue por abrir |
+| H1 | **No hay forma de crear usuarios ni cambiar contraseñas sin `seed.sql`.** El #14 instala solo con `schema.sql`, así que la tabla `usuario` queda vacía y nadie puede iniciar sesión. Tampoco existe una pantalla para crear usuarios, restablecer contraseñas o cambiar la propia. | Alta: bloquea el #14 | Issue #27; resuelto en el PR #26 |
 
 **Pasos para reproducir H1:**
 1. Importar solo `database/schema.sql` en una base vacía.
