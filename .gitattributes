@@ -1,0 +1,2 @@
+# Librerías de terceros: no convertir saltos de línea (la huella SHA-384 debe coincidir)
+assets/vendor/** -text
