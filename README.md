@@ -29,8 +29,21 @@ Equipo: Andrés Calderín, Sebastián Caraballo y Jeison Villanueva. Docente: Pa
    ```bash
    git clone https://github.com/vixanxva/MediFlota.git
    ```
-3. En phpMyAdmin, importar `database/schema.sql` y luego `database/seed.sql`.
+3. En phpMyAdmin, importar `database/schema.sql` y luego `database/seed.sql` (datos de prueba; usuarios `admin` y `tecnico`, contraseña `mediflota123`).
 4. Abrir `http://localhost/MediFlota/`.
+
+## Instalación en el taller (sin datos de prueba)
+
+1. Pasos 1 y 2 de arriba, con la versión de `main`.
+2. Importar **solo** `database/schema.sql`. No importar `seed.sql`.
+3. Abrir `http://localhost/MediFlota/` y hacer clic en **«Crea el primer administrador»** (`instalar.php`). Hacerlo enseguida: esa página solo funciona mientras no exista ningún usuario y después se cierra sola.
+4. Entrar con ese administrador y registrar:
+   1. los **vehículos**;
+   2. los **técnicos**;
+   3. los **usuarios**. Cada técnico que vaya a entrar al sistema necesita su usuario.
+5. Entregar a cada persona su contraseña de forma privada. Cada quien la cambia en **«Cambiar contraseña»**, junto a su nombre arriba a la derecha.
+
+Si alguien olvida su contraseña, un administrador la restablece en **Usuarios**.
 
 ## Estructura de carpetas
 
@@ -38,11 +51,63 @@ Equipo: Andrés Calderín, Sebastián Caraballo y Jeison Villanueva. Docente: Pa
 MediFlota/
 ├── config/      # conexión a la base de datos
 ├── database/    # schema.sql y seed.sql
-├── includes/    # header, footer, sesión y control de acceso
-├── modules/     # una carpeta por módulo (vehiculos, tecnicos, ingresos, ...)
-├── assets/      # css, js, imágenes
-└── index.php    # login
+├── docs/        # pruebas funcionales y documentación
+├── includes/    # header.php, footer.php, menu.php, sesión y funciones de ayuda
+├── modules/     # una carpeta por módulo (panel, vehiculos, tecnicos, ingresos, historial, usuarios)
+├── assets/      # css/estilos.css, js, img/logo.svg
+├── index.php    # login
+├── instalar.php # crea el primer administrador (solo con la tabla usuario vacía)
+├── cambiar_clave.php # cada usuario cambia su contraseña
+├── inicio.php   # página de inicio tras el login
+└── logout.php   # cerrar sesión
 ```
+
+Si tu MySQL tiene contraseña u otra configuración, copia `config/config.local.example.php` como `config/config.local.php` y cambia ahí lo necesario (ese archivo no se sube a git).
+
+## Cómo crear una página protegida
+
+Cada página de `modules/<modulo>/` empieza así:
+
+```php
+<?php
+require_once __DIR__ . '/../../includes/sesion.php';
+requiere_perfil('administrador');              // solo administradores
+// requiere_perfil('administrador', 'tecnico'); // ambos perfiles
+// requiere_login();                            // cualquier usuario con sesión
+
+// ...consultas y procesamiento del formulario (antes de imprimir HTML)...
+
+$titulo = 'Vehículos';
+require __DIR__ . '/../../includes/header.php';
+?>
+<h1 class="h3 mb-3">Vehículos</h1>
+<!-- contenido de la página -->
+<?php require __DIR__ . '/../../includes/footer.php'; ?>
+```
+
+- `header.php` pone Bootstrap, los estilos, la barra de navegación según el perfil y el mensaje guardado con `guardar_mensaje()`. `footer.php` cierra la página.
+- Las redirecciones (`redirigir()`) van **antes** del `header.php`, porque después ya se envió HTML.
+- **El menú no se edita:** ya tiene todos los módulos (`includes/menu.php`). La opción aparece en gris ("en construcción") hasta que exista `modules/<modulo>/index.php`; al crear ese archivo se activa sola.
+- Cuando exista `modules/panel/index.php` (#8), `inicio.php` redirige allá y el panel pasa a ser la página principal.
+- Formularios de una columna: envolverlos en `<div class="contenido-angosto">`. Los estilos propios van en `assets/css/estilos.css`.
+
+Funciones disponibles (`includes/sesion.php` y `includes/funciones.php`):
+
+| Función | Para qué |
+|---|---|
+| `db()` | Conexión PDO. Usar siempre consultas preparadas: `db()->prepare('... WHERE id = ?')`. |
+| `usuario_actual()` | Datos del usuario conectado: `usuario`, `perfil`, `id_tecnico`, `nombre`. |
+| `es_administrador()` | `true` si el perfil es administrador. |
+| `e($texto)` | Escapa texto para imprimirlo en HTML. Usarla en todo lo que venga de la BD o de formularios. |
+| `url('modules/vehiculos/')` | URL dentro del proyecto, sin importar la carpeta donde esté instalado. |
+| `redirigir('inicio.php')` | Redirige y termina. |
+| `csrf_campo()` / `verificar_csrf()` | Poner `<?= csrf_campo() ?>` en cada formulario POST y llamar `verificar_csrf()` al procesarlo. |
+| `guardar_mensaje($texto, $tipo)` / `tomar_mensaje()` | Mensaje para mostrar en la siguiente página (ej. "Vehículo guardado"). |
+| `mostrar_errores($errores)` | Lista de errores de validación en una alerta roja (no imprime nada si está vacía). |
+| `etiqueta_estado_vehiculo($estado)` | Etiqueta de color del estado: verde disponible, amarillo en mantenimiento, rojo fuera de servicio. Textos en `ESTADOS_VEHICULO`. |
+| `etiqueta_rtm($vencimiento)` / `estado_rtm($vencimiento)` | Fecha de la revisión técnico-mecánica con etiqueta «Vencida» o «Por vencer» (`DIAS_AVISO_RTM` = 30 días antes). |
+| `TIPOS_VEHICULO` | `['ambulancia' => 'Ambulancia', 'otro' => 'Otro']`. |
+| `formato_fecha()`, `formato_fecha_hora()`, `formato_numero()`, `formato_pesos()` | `09/11/2026`, `09/11/2026 2:20 p. m.`, `152.300`, `$ 1.450.000`. |
 
 ## Flujo de trabajo
 
