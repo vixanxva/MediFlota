@@ -42,8 +42,8 @@ $sinUsuarios = !hay_usuarios();
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Iniciar sesión - MediFlota</title>
     <link rel="icon" href="<?= e(url('assets/img/logo.svg')) ?>" type="image/svg+xml">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="<?= e(url('assets/vendor/bootstrap/bootstrap.min.css')) ?>"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH">
     <link rel="stylesheet" href="<?= e(url('assets/css/estilos.css') . '?v=' . filemtime(__DIR__ . '/assets/css/estilos.css')) ?>">
 </head>
 <body class="pagina-login">
