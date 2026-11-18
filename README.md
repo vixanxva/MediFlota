@@ -19,7 +19,7 @@ Equipo: Andrés Calderín, Sebastián Caraballo y Jeison Villanueva. Docente: Pa
 ## Tecnologías
 
 - PHP 8 + MySQL/MariaDB (XAMPP)
-- HTML, CSS y Bootstrap 5
+- HTML, CSS y Bootstrap 5.3.3 (incluido en `assets/vendor/bootstrap/`, así el sistema funciona sin Internet)
 - PDO con consultas preparadas, `password_hash` para contraseñas
 
 ## Instalación local
@@ -54,7 +54,7 @@ MediFlota/
 ├── docs/        # pruebas funcionales y documentación
 ├── includes/    # header.php, footer.php, menu.php, sesión y funciones de ayuda
 ├── modules/     # una carpeta por módulo (panel, vehiculos, tecnicos, ingresos, historial, usuarios)
-├── assets/      # css/estilos.css, js, img/logo.svg
+├── assets/      # css/estilos.css, js, img/logo.svg y vendor/bootstrap
 ├── index.php    # login
 ├── instalar.php # crea el primer administrador (solo con la tabla usuario vacía)
 ├── cambiar_clave.php # cada usuario cambia su contraseña
